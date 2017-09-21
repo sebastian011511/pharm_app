@@ -19,10 +19,7 @@ import android.widget.ToggleButton;
  * This class is just examples of how to name things
  */
 
-
-//testing 3rd time into git hub 
-public class NameConventions
-{
+public class NameConventions {
     // widgets and stff
     Button btnName;
     EditText etName;
@@ -33,11 +30,9 @@ public class NameConventions
     Spinner spnName;
 
     // inner classes
-    class FalseBtnHandler implements View.OnClickListener
-    {
+    class FalseBtnHandler implements View.OnClickListener {
         @Override
-        public void onClick(View v)
-        {
+        public void onClick(View v) {
             // Code
         }
     }

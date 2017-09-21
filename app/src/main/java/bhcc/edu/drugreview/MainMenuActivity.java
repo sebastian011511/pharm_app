@@ -3,14 +3,10 @@ package bhcc.edu.drugreview;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class MainMenuActivity extends AppCompatActivity
-{
-// change
+public class MainMenuActivity extends AppCompatActivity {
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
     }
-    // change nttse
 }
