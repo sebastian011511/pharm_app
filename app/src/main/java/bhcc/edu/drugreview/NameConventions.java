@@ -20,7 +20,7 @@ import android.widget.ToggleButton;
 
 public class NameConventions
 {
-    // widgets
+    // widgets and stff
     Button btnName;
     EditText etName;
     TextView tvName;
