@@ -14,10 +14,13 @@ import android.widget.ToggleButton;
 
 /**
  * @author nils
+ * @author Sebastian Vasco
  * created 9/21/2017.
  * This class is just examples of how to name things
  */
 
+
+//testing 3rd time
 public class NameConventions
 {
     // widgets and stff
