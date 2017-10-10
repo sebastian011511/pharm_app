@@ -14,7 +14,6 @@ public class Medicine implements Serializable {
     String category;
     String studyTopic;
 
-
     /**
      * Constructor
      */
