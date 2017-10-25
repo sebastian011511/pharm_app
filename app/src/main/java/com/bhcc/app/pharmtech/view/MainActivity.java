@@ -95,6 +95,13 @@ public class MainActivity extends AppCompatActivity
         if (itemId == R.id.review) {
             ReplaceFragmentCommand.startNewFragment(this, new ReviewFragment(), false);
         }
+        if(itemId==R.id.about){
+            ReplaceFragmentCommand.startNewFragment(this, new AboutFragment(), false);
+        }
+        if(itemId==R.id.legal){
+            ReplaceFragmentCommand.startNewFragment(this, new LegalFragment(), false);
+        }
+
 
         closeDrawer();
 
