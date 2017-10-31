@@ -21,7 +21,8 @@
                 android:textSize="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/legal_title_label"/>
+                android:text="@string/legal_title_label"
+                style="?android:listSeparatorTextViewStyle"/>
 
             <TextView
                 android:id="@+id/legal_disclaimer"

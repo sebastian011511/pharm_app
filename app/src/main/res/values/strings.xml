@@ -12,8 +12,10 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="search">Search</string>
+    <string name="flip_instruction">(Long click generic name to flip card)</string>
     <string name="clear_search">Clear Search</string>
     <string name="legal_title_label">Legal Disclaimers etc. - PharmTech app</string>
+    <string name="about_title_label">About PharmTech App</string>
     <string name="legal_disclaimer">\nDisclaimer\nThis mobile app was created by Bunker Hill
         Community College Android Mobile App students for informational and educational use
         only. This app is intended for use by students of the Bunker Hill Community College

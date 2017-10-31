@@ -52,6 +52,7 @@ public class CardActivity extends Activity {
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
         viewPager.setAdapter(adapter);
 
+        //Display correct medicine and set view at that position
         for (int i = 0; i < mMedicines.size(); i++) {
             if (mMedicines.get(i).getGenericName().equals(medicineGenericName)) {
                 viewPager.setCurrentItem(i);

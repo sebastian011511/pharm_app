@@ -72,6 +72,15 @@ public class CardFrontFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_card_front, container, false);
         TextView mDrugName = (TextView) rootView.findViewById(R.id.medicine_name_textview);
+        TextView mFlipInstructions=(TextView)rootView.findViewById(R.id.flip_instruction);
+
+        //You can long click on drug name and will also flip card
+        mDrugName.setOnLongClickListener(new View.OnLongClickListener() {
+            public boolean onLongClick(View arg){
+                flipTheCard();
+                return true;
+            }
+        });
 
         // Play audio button
         ImageView playAudioButton = (ImageView) rootView.findViewById(R.id.play_audio_button);
@@ -130,6 +139,7 @@ public class CardFrontFragment extends Fragment {
         return rootView;
     }
 
+    //Visually animated flip when looking at the card
     private void flipTheCard() {
         getFragmentManager()
                 .beginTransaction()

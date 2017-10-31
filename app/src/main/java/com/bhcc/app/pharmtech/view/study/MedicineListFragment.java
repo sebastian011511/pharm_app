@@ -71,6 +71,8 @@ public class MedicineListFragment extends Fragment {
      * @param menu
      * @param menuInflater
      */
+
+    //Menu on top right; search bar and options menu to clear search
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
 
@@ -91,7 +93,7 @@ public class MedicineListFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String s) {
 
-                // if there is nothing in the serach bar
+                // if there is nothing in the search bar
                 // show every drugs
                 if (s.length() == 0) {
                     MedicineLab.get(getContext())
@@ -208,7 +210,7 @@ public class MedicineListFragment extends Fragment {
             // show toast notifying a view holder is clicked
             //Toast.makeText(getContext(), medicine.getGenericName() + " Clicked", Toast.LENGTH_SHORT).show();
 
-            // go to CardActivity
+            // go to CardActivity when a medicine from the list is pressed
             Intent i = CardActivity.newIntent(getContext(), this.medicine.getGenericName());
             startActivity(i);
         }

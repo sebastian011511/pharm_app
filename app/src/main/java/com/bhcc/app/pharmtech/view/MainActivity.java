@@ -74,6 +74,36 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
 
+        /**@svasco
+         * Menu updated in main menu, if statements was not very organized*/
+        switch (item.getItemId()) {
+            case R.id.study:
+                ReplaceFragmentCommand.startNewFragment(this, new MedicineListFragment(), false);
+                break;
+            case R.id.quiz:
+                ReplaceFragmentCommand.startNewFragment(this, new SelectQuizFragment(), false);
+                break;
+            case R.id.review:
+                ReplaceFragmentCommand.startNewFragment(this, new ReviewFragment(), false);
+                break;
+            case R.id.filter:
+                ReplaceFragmentCommand.startNewFragment(this, new FilterFragment(), false);
+                break;
+            case R.id.sort:
+                showRadioButtonDialog();
+                break;
+            case R.id.about:
+                ReplaceFragmentCommand.startNewFragment(this, new AboutFragment(), false);
+                break;
+            case R.id.legal:
+                ReplaceFragmentCommand.startNewFragment(this, new LegalFragment(), false);
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+
+/*
         int itemId = item.getItemId();
 
         if (itemId == R.id.study) {
@@ -102,6 +132,7 @@ public class MainActivity extends AppCompatActivity
             ReplaceFragmentCommand.startNewFragment(this, new LegalFragment(), false);
         }
 
+*/
 
         closeDrawer();
 
