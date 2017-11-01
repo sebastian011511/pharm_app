@@ -9,21 +9,24 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="vertical">
-    <TextView
-        android:id="@+id/medicine_name_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/medicine_name_textview"
-        android:textColor="@android:color/black"
-        android:textSize="30dp" />
 
-    <TextView
-        android:id="@+id/flip_instruction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/flip_instruction"
-        android:textColor="@android:color/black"
-        android:textSize="12dp" />
+        <TextView
+            android:id="@+id/medicine_name_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/medicine_name_textview"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="30dp"/>
+
+        <TextView
+            android:id="@+id/flip_instruction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/flip_instruction"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="12dp"/>
 
     </TableLayout>
 
