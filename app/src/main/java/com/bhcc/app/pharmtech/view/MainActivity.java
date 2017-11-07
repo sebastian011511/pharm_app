@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity
 
     private static final int ASCENDING_ID = 0;
     private static final int DESCENDING_ID = 1;
+    private static final int RANDOM_ID=2;
 
     DrawerLayout drawerLayout;
     @Override
@@ -170,6 +171,7 @@ public class MainActivity extends AppCompatActivity
         // add choices
         stringList.add("Ascending");
         stringList.add("Descending");
+        stringList.add("Random");
 
         // Radio group to hold radio buttons
         final RadioGroup rg = (RadioGroup) dialog.findViewById(R.id.radio_group);
@@ -185,6 +187,11 @@ public class MainActivity extends AppCompatActivity
         rbDescending.setId(DESCENDING_ID);
         rg.addView(rbDescending);
 
+        RadioButton rdRandom=new RadioButton(this);
+        rdRandom.setText(stringList.get(RANDOM_ID));
+        rdRandom.setId(RANDOM_ID);
+        rg.addView(rdRandom);
+
         TextView tvOK = (TextView) dialog.findViewById(R.id.choose_sorting_ok_button);
         tvOK.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -198,6 +205,9 @@ public class MainActivity extends AppCompatActivity
                     case DESCENDING_ID:
                         MedicineLab.get(getApplication()).sortDescending();
                         Log.i("test3", MedicineLab.get(getApplication()).getMedicines().get(0).getGenericName());
+                        break;
+                    case RANDOM_ID:
+                        MedicineLab.get(getApplication()).sortRandom();
                         break;
                 }
                 dialog.dismiss();

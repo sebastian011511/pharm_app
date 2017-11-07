@@ -281,4 +281,14 @@ public class MedicineLab {
             }
         }));
     }
+
+    /**
+     * To sort the medicineLab Random order
+     * */
+    public void sortRandom() {
+
+        List<Medicine> tempMedicines=new ArrayList<Medicine>();
+        tempMedicines=medicines;
+        Collections.shuffle(tempMedicines);
+    }
 }

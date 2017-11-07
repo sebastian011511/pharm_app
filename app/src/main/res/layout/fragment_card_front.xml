@@ -51,7 +51,7 @@
         android:layout_marginRight="16dp"
         android:background="@null"
         android:elevation="3dp"
-        android:src="@drawable/icn_play_solid" />
+        android:src="@drawable/ic_play_solid_remake" />
 
 
 </FrameLayout>

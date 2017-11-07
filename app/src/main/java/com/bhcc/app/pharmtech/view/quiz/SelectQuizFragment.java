@@ -198,7 +198,7 @@ public class SelectQuizFragment extends Fragment {
 
         ArrayList<String> spinnerArray = new ArrayList<String>();
         spinnerArray.add("Multiple choice");
-        spinnerArray.add("Fill in the blank");
+        //spinnerArray.add("Fill in the blank"); /*To remove the fill in the blank quiz*******************************************************/
 
 
         final Spinner spChooseQuizStyle = (Spinner) rootView.findViewById(R.id.quiz_style);
@@ -247,12 +247,13 @@ public class SelectQuizFragment extends Fragment {
                     String[] topicList = toStringArray(studyTopicCheckedList);
                     String[] fieldList = toStringArray(studyFieldCheckedList);
 
-                    if (spChooseQuizStyle.getSelectedItem().toString().equals("Fill in the blank")) {
+                    /**To remove the fill in the blank from the quiz section***************************************************************/
+                    /*if (spChooseQuizStyle.getSelectedItem().toString().equals("Fill in the blank")) {
                         QuizFragment fragment = QuizFragment
                                 .newInstance(topicList, fieldList, numOfQuestions);
                         ReplaceFragmentCommand
                                 .startNewFragment(getActivity(), fragment, true);
-                    } else if (spChooseQuizStyle.getSelectedItem().toString().equals("Multiple choice")) {
+                    } else*/ if (spChooseQuizStyle.getSelectedItem().toString().equals("Multiple choice")) {
                         QuizMultipleChoiceFragment fragment = QuizMultipleChoiceFragment
                                 .newInstance(topicList, fieldList, numOfQuestions);
                         ReplaceFragmentCommand
