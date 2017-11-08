@@ -17,22 +17,27 @@
     <string name="legal_title_label">Legal Disclaimers etc. - PharmTech app</string>
     <string name="about_title_label">About - PharmTech app\n</string>
     <string name="about_prev_author">
-        Previous Authors\n\n
-        Saadia\t   \t  \t Achouham\n
-        Ruchelly   P. Almeida\n
-        Oleksii\t \t    \t Butakov\n
-        Lounis \t	 \t   \t Idir\n
-        Evan\t  \tY.  \t Liu\n
-        Shradha\t	    \t Luintel\n
-        Karlisha\t      \t McQuiter\n
-        Thomas  A.   Newell\n
-        Alexandre\t    Pereira\n
-        David\t  \t C.   \tPowell\n
-        James\t    \t   \t Sacchetti\n
-        Prakrit\t	 \t   \t Saetang\n
-        Fikir\t  \t \tG.   \t Yilma\n
-        Shipeng\t	\t     Yu\n
-        Edgard\t	\t    \t Zafack</string>
+        Last Updated: Fall 2017\n\n
+        Updates made by:\n
+        Nelson\tTse\n
+        Nils\tJohnson\n
+        Sebastian\t\Vasco\n\n
+        Previous Authors:\n
+        Saadia\tAchouham\n
+        Ruchelly\tP.\tAlmeida\n
+        Oleksii\tButakov\n
+        Lounis\tIdir\n
+        Evan\tY.\tLiu\n
+        Shradha\tLuintel\n
+        Karlisha\tMcQuiter\n
+        Thomas\tA.\tNewell\n
+        Alexandre\tPereira\n
+        David\tC.\tPowell\n
+        James\tSacchetti\n
+        Prakrit\tSaetang\n
+        Fikir\tG.\tYilma\n
+        Shipeng\tYu\n
+        Edgard\tZafack</string>
 
     <string name="legal_disclaimer">\nDisclaimer\nThis mobile app was created by Bunker Hill
         Community College Android Mobile App students for informational and educational use
