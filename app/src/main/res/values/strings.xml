@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">PharmTech</string>
+    <string name="app_name">Pharm Tech</string>
     <string name="medicine_name_textview">Medicine Name</string>
     <string name="show_detail_button">Show Detail</string>
     <string name="audio_button">Play Audio</string>
@@ -60,6 +60,10 @@
         subjected to discrimination, you may file a complaint within 180 days with either the
         recipient’s Equal Opportunity Officer or the Director, Civil Rights Center (CRC), U.S.
         Department of Labor, 200 Constitution Avenue NW, Room N-4123, Washington, DC.</string>
+
+
+    <string name="quiz_question"> "What is the %1s of %2s (%3s)?</string>
+
 
 
     <!-- TODO: Remove or change this placeholder text -->

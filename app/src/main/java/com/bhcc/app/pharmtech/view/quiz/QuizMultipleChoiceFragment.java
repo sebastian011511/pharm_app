@@ -285,9 +285,23 @@ public class QuizMultipleChoiceFragment extends Fragment {
             int randomField = Math.abs(randomNumber.nextInt() % fieldList.length);
             Log.i("test1", String.valueOf(randomField));
 
-            strQuestion[index] = "What is the " + fieldList[randomField] + " of " +
-                    medicines.get(index).getGenericName() + "/" + medicines.get(index).getBrandName();
 
+            /**Using string format to set up question on quiz
+             *3 parameters for string:1st get string ID, 2nd pass the study topic, 3rd get brand name
+             *
+             * 2nd parameter.  If the study topic is "Special" category, then add "instructions" to
+             * to the string so that it says "what is special instructions for DRUGNAME?
+             * else leave regular string.*/
+            strQuestion[index] = getString(R.string.quiz_question,
+                    fieldList[randomField] == MedicineSchema.MedicineTable.Cols.SPECIAL ?
+                            fieldList[randomField] + " instructions" : fieldList[randomField],
+                    medicines.get(index).getGenericName(), medicines.get(index).getBrandName());
+
+
+            /**2nd attempt at formating question if 1st doesnt work*/
+            /*strQuestion[index]=getString(R.string.quiz_question,fieldList[randomField],
+                    medicines.get(index).getGenericName(),medicines.get(index).getBrandName());
+            */
             mQuestion.setText(strQuestion[index]);
 
 
