@@ -14,30 +14,30 @@
     <string name="search">Search</string>
     <string name="flip_instruction">(Long click generic name to flip card)</string>
     <string name="clear_search">Clear Search</string>
-    <string name="legal_title_label">Legal Disclaimers etc. - PharmTech app</string>
+    <string name="legal_title_label">Legal Disclaimers etc. - PharmTech app\n</string>
     <string name="about_title_label">About - PharmTech app\n</string>
     <string name="about_prev_author">
-        Last Updated: Fall 2017\n\n
+        \nLast Updated: Fall 2017\n\n
         Updates made by:\n
-        Nelson\tTse\n
-        Nils\tJohnson\n
-        Sebastian\t\Vasco\n\n
+        Nelson Tse\n
+        Nils Johnson\n
+        Sebastian Vasco\n\n
         Previous Authors:\n
-        Saadia\tAchouham\n
-        Ruchelly\tP.\tAlmeida\n
-        Oleksii\tButakov\n
-        Lounis\tIdir\n
-        Evan\tY.\tLiu\n
-        Shradha\tLuintel\n
-        Karlisha\tMcQuiter\n
-        Thomas\tA.\tNewell\n
-        Alexandre\tPereira\n
-        David\tC.\tPowell\n
-        James\tSacchetti\n
-        Prakrit\tSaetang\n
-        Fikir\tG.\tYilma\n
-        Shipeng\tYu\n
-        Edgard\tZafack</string>
+        Saadia Achouham\n
+        Ruchelly P. Almeida\n
+        Oleksii Butakov\n
+        Lounis Idir\n
+        Evan Y. Liu\n
+        Shradha Luintel\n
+        Karlisha McQuiter\n
+        Thomas A. Newell\n
+        Alexandre Pereira\n
+        David C. Powell\n
+        James Sacchetti\n
+        Prakrit Saetang\n
+        Fikir G. Yilma\n
+        Shipeng Yu\n
+        Edgard Zafack</string>
 
     <string name="legal_disclaimer">\nDisclaimer\nThis mobile app was created by Bunker Hill
         Community College Android Mobile App students for informational and educational use
