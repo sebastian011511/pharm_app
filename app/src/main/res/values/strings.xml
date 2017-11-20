@@ -68,4 +68,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="drug_of_day_title">Drug of The Day</string>
+    <string name="btn_close_drug_of_day">Close</string>
+    <string name="btn_show_drug_of_day">Show Me This Card</string>
 </resources>

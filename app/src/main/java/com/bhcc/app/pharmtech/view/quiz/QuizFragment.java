@@ -133,7 +133,7 @@ public class QuizFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        File reviewInfo = new File(getActivity().getFilesDir(), MainActivity.fileName);
+        File reviewInfo = new File(getActivity().getFilesDir(), MainActivity.REVIEW_FILE);
         try {
             PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(reviewInfo, true)));
             SimpleDateFormat dateFormat = new SimpleDateFormat("MMddyy_HHmmss");

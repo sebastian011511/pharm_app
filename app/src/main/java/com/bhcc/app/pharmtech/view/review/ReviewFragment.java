@@ -58,7 +58,7 @@ public class ReviewFragment extends Fragment {
 
         // get data from the file
         // each review file's name
-        File reviewInfo = new File(getActivity().getFilesDir(), MainActivity.fileName);
+        File reviewInfo = new File(getActivity().getFilesDir(), MainActivity.REVIEW_FILE);
         try {
             Scanner fileInput = new Scanner(reviewInfo);
             while (fileInput.hasNextLine()) {
@@ -174,7 +174,7 @@ public class ReviewFragment extends Fragment {
                         fileNames.remove(getPosition());
 
                         // Write update file name list to the info file
-                        File file = new File(getActivity().getFilesDir(),MainActivity.fileName);
+                        File file = new File(getActivity().getFilesDir(),MainActivity.REVIEW_FILE);
                         PrintWriter printWriter = new PrintWriter(file);
 
                         for (String fileName : fileNames) {
