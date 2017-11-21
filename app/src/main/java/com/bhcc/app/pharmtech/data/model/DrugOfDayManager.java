@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * This class class manages the "Drug of The Day" feature.
  * This class has a shuffled list of the drug generic names, an index for
- * which one was shown last, and a time of when a new drug of the day can be shown.
+ * which one was shown last, and the time when the current drug of the day expires.
  *
  * @author Nils Johnson
  */
@@ -21,10 +21,10 @@ import java.util.List;
 public class DrugOfDayManager implements Serializable
 {
     private static final String TAG = "DrugOfDayManager";
-    private Date nextNewDrugTime;
-    private int drugOfDayIndex;
-    private ArrayList<String> drugOfDayList;
-    private boolean drugShownToday = false;
+    private Date expirationDate;
+    private int index = 0;
+    private ArrayList<String> drugOfDayList = new ArrayList<>();
+    private ArrayList<Boolean> drugShown = new ArrayList<>();
 
     /**
      * This object is to only be made once, and then loaded from a file each time it is needed to be
@@ -34,16 +34,16 @@ public class DrugOfDayManager implements Serializable
      */
     public DrugOfDayManager(List<Medicine> medicines)
     {
-        setNextDay();
-        // makes an array list with space reserved for each element
-        drugOfDayList = new ArrayList<>(medicines.size() + 1);
-        drugOfDayIndex = 0;
+        setExpirationDate();
 
+        // initialize lists with drug names and false
         for (int i = 0; i < medicines.size(); i++)
         {
             drugOfDayList.add(medicines.get(i).getGenericName());
+            drugShown.add(false);
         }
 
+        // shuffle so that drug of the day is random
         Collections.shuffle(drugOfDayList);
     }
 
@@ -51,22 +51,24 @@ public class DrugOfDayManager implements Serializable
      * Sets a point in time that is midnight of the next day, which is when the program knows will
      * show another drug of the day.
      */
-    private void setNextDay()
+    private void setExpirationDate()
     {
         // today
-        Calendar date = new GregorianCalendar();
+        Calendar cal = new GregorianCalendar();
+
         // reset hour, minutes, seconds and millis
-        date.set(Calendar.HOUR_OF_DAY, 0);
-        date.set(Calendar.MINUTE, 0);
-        date.set(Calendar.SECOND, 0);
-        date.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
 
         // next day
-        date.add(Calendar.DAY_OF_MONTH, 1);
+        cal.add(Calendar.DAY_OF_MONTH, 1);
 
-        nextNewDrugTime = new Date(date.getTime().toString());
+        // set expiration date to be next day
+        expirationDate = cal.getTime();
 
-        Log.d(TAG, "Next new drug of day: " + nextNewDrugTime.toString());
+        Log.d(TAG, "Current Drug Of The Day Will Expire: " + expirationDate.toString());
     }
 
     /**
@@ -75,23 +77,43 @@ public class DrugOfDayManager implements Serializable
      */
     public String getDrugOfDay()
     {
-        drugShownToday = true;
-        if (new Date().getTime() < nextNewDrugTime.getTime())
+        // if this instant is before the next expiration date, return the current drug of the day
+        if (new Date().before(expirationDate))
         {
-            return drugOfDayList.get(drugOfDayIndex);
-        } else
+            drugShown.set(index, true);
+            return drugOfDayList.get(index);
+        }
+        // else, the instant is after the expiration day, which means we need to set the expiration date,
+        // increment the index to show the next drug
+        else
         {
-            setNextDay();
-            drugOfDayIndex = (drugOfDayIndex + 1) % drugOfDayList.size();
-            return drugOfDayList.get(drugOfDayIndex);
+            // set the previous drug of the day to being not shown, so the program doesnt break if the user goes through all 200 drugs.
+            drugShown.set(index, false);
+            setExpirationDate();
+            index = (index + 1) % drugOfDayList.size();
+            drugShown.set(index, true);
+            return drugOfDayList.get(index);
         }
     }
 
-    /**
-     * @return a boolean, stating whether of not a drug has been shown yet on this day.
-     */
-    public boolean drugShownToday()
+    public Date getExpirationDate()
     {
-        return drugShownToday;
+        return this.expirationDate;
+    }
+
+    public boolean shownToday()
+    {
+        Date rightNow = new Date();
+
+        // if right now is before the expiration date, return whether or no that drug has been shown.
+        if(rightNow.before(expirationDate))
+        {
+            return drugShown.get(index);
+        }
+        // else we are ready for a new drug of the day. return the status of the next one, which should be false.
+        else
+        {
+            return drugShown.get(index + 1);
+        }
     }
 }
