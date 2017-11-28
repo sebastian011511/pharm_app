@@ -63,7 +63,6 @@ public class DrugOfDayFragment extends DialogFragment
 
         return new AlertDialog.Builder(getActivity())
                 .setView(v)
-                .setTitle(R.string.drug_of_day_title)
                 .create();
     }
 

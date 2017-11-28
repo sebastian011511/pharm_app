@@ -78,22 +78,23 @@ public class DrugOfDayManager implements Serializable
     public String getDrugOfDay()
     {
         // if this instant is before the next expiration date, return the current drug of the day
-        if (new Date().before(expirationDate))
-        {
+        //////////////////////This section was commented out so drug of the day is displayed every time app is started after it is destroyed ///////////////////////
+       /** if (new Date().before(expirationDate))
+        *{
             drugShown.set(index, true);
             return drugOfDayList.get(index);
         }
         // else, the instant is after the expiration day, which means we need to set the expiration date,
         // increment the index to show the next drug
         else
-        {
+        {*/
             // set the previous drug of the day to being not shown, so the program doesnt break if the user goes through all 200 drugs.
             drugShown.set(index, false);
-            setExpirationDate();
+            //setExpirationDate();    //This method kept track of the drug of the day and allow to displayed once a day but b/c semester has less than 200 days, we no longer need it
             index = (index + 1) % drugOfDayList.size();
             drugShown.set(index, true);
             return drugOfDayList.get(index);
-        }
+       // }
     }
 
     public Date getExpirationDate()
