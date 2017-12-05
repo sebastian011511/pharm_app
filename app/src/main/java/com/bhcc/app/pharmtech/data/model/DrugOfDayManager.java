@@ -23,6 +23,8 @@ public class DrugOfDayManager implements Serializable
     private static final String TAG = "DrugOfDayManager";
     private Date expirationDate;
     private int index = 0;
+    // show a new drug of the day every three hours
+    private static final int HOUR_INTERVAL = 3;
     private ArrayList<String> drugOfDayList = new ArrayList<>();
     private ArrayList<Boolean> drugShown = new ArrayList<>();
 
@@ -57,44 +59,46 @@ public class DrugOfDayManager implements Serializable
         Calendar cal = new GregorianCalendar();
 
         // reset hour, minutes, seconds and millis
-        cal.set(Calendar.HOUR_OF_DAY, 0);
+       /* cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
-        cal.set(Calendar.MILLISECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0)*/;
 
-        // next day
-        cal.add(Calendar.DAY_OF_MONTH, 1);
+        // next hour
+        cal.add(Calendar.HOUR_OF_DAY, HOUR_INTERVAL);
 
-        // set expiration date to be next day
+        // set expiration date to be next minute
         expirationDate = cal.getTime();
 
         Log.d(TAG, "Current Drug Of The Day Will Expire: " + expirationDate.toString());
     }
 
     /**
-     * @return the drug of the day and sets a boolean to remember that the user has already seen
+     * @return the drug of the day
+     * sets a boolean to remember that the user has already seen
      * the drug of the day on this day.
      */
     public String getDrugOfDay()
     {
+        Log.d(TAG, "Getting Drug Of Day");
+
         // if this instant is before the next expiration date, return the current drug of the day
-        //////////////////////This section was commented out so drug of the day is displayed every time app is started after it is destroyed ///////////////////////
-       /** if (new Date().before(expirationDate))
-        *{
+        if (new Date().before(expirationDate))
+        {
             drugShown.set(index, true);
             return drugOfDayList.get(index);
         }
         // else, the instant is after the expiration day, which means we need to set the expiration date,
         // increment the index to show the next drug
         else
-        {*/
+        {
             // set the previous drug of the day to being not shown, so the program doesnt break if the user goes through all 200 drugs.
             drugShown.set(index, false);
-            //setExpirationDate();    //This method kept track of the drug of the day and allow to displayed once a day but b/c semester has less than 200 days, we no longer need it
+            setExpirationDate();
             index = (index + 1) % drugOfDayList.size();
             drugShown.set(index, true);
             return drugOfDayList.get(index);
-       // }
+        }
     }
 
     public Date getExpirationDate()

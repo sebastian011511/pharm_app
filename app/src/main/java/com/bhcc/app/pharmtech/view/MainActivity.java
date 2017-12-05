@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity
                 FileInputStream fileInputStream = this.openFileInput(DRUG_OF_DAY_FILE);
                 ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
                 drugOfDayManager = (DrugOfDayManager) objectInputStream.readObject();
-                drugOfDay = drugOfDayManager.getDrugOfDay();
                 objectInputStream.close();
                 fileInputStream.close();
             }
