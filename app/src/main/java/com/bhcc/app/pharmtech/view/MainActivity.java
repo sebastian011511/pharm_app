@@ -99,8 +99,8 @@ public class MainActivity extends AppCompatActivity
                 drugOfDayManager = new DrugOfDayManager(lab.getMedicines());
             }
 
-            // if drug of the day has not been shown today, show it, and resave the file so next time the program knows it displayed it.
-            if (!drugOfDayManager.shownToday())
+            // if drug of the day has not been shown at the defined interval, show it, and resave the file so next time the program knows it displayed it.
+            if (!drugOfDayManager.wasShown())
             {
                 // show dialog with drug of day
                 drugOfDay = drugOfDayManager.getDrugOfDay();

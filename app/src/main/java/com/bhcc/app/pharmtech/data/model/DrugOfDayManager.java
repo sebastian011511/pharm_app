@@ -106,7 +106,7 @@ public class DrugOfDayManager implements Serializable
         return this.expirationDate;
     }
 
-    public boolean shownToday()
+    public boolean wasShown()
     {
         Date rightNow = new Date();
 

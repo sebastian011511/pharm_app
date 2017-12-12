@@ -50,5 +50,8 @@ public class QuizTracker implements Serializable
         return total/scoreList.size();
     }
 
-    public int getNum
+    public int getNumTimesTaken()
+    {
+        return 0;
+    }
 }
