@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bhcc.app.pharmtech.R;
-import com.bhcc.app.pharmtech.data.model.DrugOfDayManager;
 import com.bhcc.app.pharmtech.view.MainActivity;
 import com.bhcc.app.pharmtech.view.navigation.ReplaceFragmentCommand;
 import com.bhcc.app.pharmtech.view.quiz.QuizTracker;
@@ -23,7 +22,6 @@ import com.bhcc.app.pharmtech.view.quiz.QuizTracker;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -38,8 +36,9 @@ public class ReviewFragment extends Fragment {
     public static final String TAG = "ReviewFragment";
 
     // Lists
-    private List<String> dateList;
-    private List<String> fileNames;
+    private List<String> nameList;
+    private List<String> textFileNameList;
+    private List<String> trackerFileNameList;
 
     private String trackerFile = "temp.dat";
 
@@ -63,8 +62,9 @@ public class ReviewFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         // set up lists
-        dateList = new ArrayList<>();
-        fileNames = new ArrayList<>();
+        nameList = new ArrayList<>();
+        textFileNameList = new ArrayList<>();
+        trackerFileNameList = new ArrayList<>();
 
         // get data from the file
         // each review file's name
@@ -73,22 +73,13 @@ public class ReviewFragment extends Fragment {
             Scanner fileInput = new Scanner(reviewInfo);
             while (fileInput.hasNextLine()) {
                 // add to file name list
-                String temp = fileInput.nextLine();
-                fileNames.add(temp);
-                Log.i("test5", temp);
+                String tempTextFile = fileInput.nextLine();
+                textFileNameList.add(tempTextFile);
 
-                // modify date & time
-                StringBuilder stringBuilder = new StringBuilder(temp);
-                stringBuilder.insert(2, '/');
-                stringBuilder.insert(5, '/');
-                stringBuilder.insert(11, ':');
-                stringBuilder.insert(14, ':');
-                stringBuilder.replace(8, 9, " ");
-                temp = stringBuilder.toString();
+                String tempTrackerFile = fileInput.nextLine();
+                trackerFileNameList.add(tempTrackerFile);
 
-                // add to date list
-                Log.i("test5", temp);
-                dateList.add(temp);
+                nameList.add(tempTextFile);
             }
 
         } catch (FileNotFoundException e) {
@@ -126,8 +117,8 @@ public class ReviewFragment extends Fragment {
 
         // if no review in the file, show a warning toast
         // otherwise, show the review list
-        if (dateList.size() > 0) {
-            quizListAdapter = new QuizListAdapter(dateList);
+        if (nameList.size() > 0) {
+            quizListAdapter = new QuizListAdapter(nameList);
             quizListRecyclerView.setAdapter(quizListAdapter);
         }
         else {
@@ -163,13 +154,13 @@ public class ReviewFragment extends Fragment {
 
         /**
          * To bind data to a holder
-         * @param date
+         * @param name
          */
-        public void bindReview(String date) {
+        public void bindReview(String name) {
 
             // set text to each widget
             idTextView.setText("Quiz #" + (getPosition() + 1));
-            nameTextView.setText("( " + date + " )");
+            nameTextView.setText(name);
 
             // Delete Review Part
             trash.setOnClickListener(new View.OnClickListener() {
@@ -179,23 +170,29 @@ public class ReviewFragment extends Fragment {
                     try {
 
                         // Delete the review file
-                        File fileDeleted = new File(getActivity().getFilesDir(), fileNames.get(getPosition()));
+                        File fileDeleted = new File(getActivity().getFilesDir(), textFileNameList.get(getPosition()));
                         fileDeleted.delete();
 
+                        // delete the tracker file
+                        File trackerFileDeleted = new File(getActivity().getFilesDir(), trackerFileNameList.get(getPosition()));
+                        trackerFileDeleted.delete();
+
                         // Remove file name from the list
-                        fileNames.remove(getPosition());
+                        textFileNameList.remove(getPosition());
+                        trackerFileNameList.remove(getPosition());
 
                         // Write update file name list to the info file
                         File file = new File(getActivity().getFilesDir(),MainActivity.REVIEW_FILE);
                         PrintWriter printWriter = new PrintWriter(file);
 
-                        for (String fileName : fileNames) {
-                            printWriter.write(fileName + "\n");
+                        for(int i = 0; i < textFileNameList.size(); i++)
+                        {
+                            printWriter.write(textFileNameList.get(i) + "\n");
+                            printWriter.write(trackerFileNameList.get(i) + "\n");
                         }
 
                         printWriter.close();
-
-
+                        
                     }
                     catch (Exception ex) {}
 
@@ -203,7 +200,8 @@ public class ReviewFragment extends Fragment {
                     ReplaceFragmentCommand.startNewFragment(getActivity(), new ReviewFragment(), false);
                 }
             });
-            // set the tracker button to the right file
+
+
             btnTakeAgain.setOnClickListener(new View.OnClickListener()
             {
                 QuizTracker tracker;
@@ -215,7 +213,7 @@ public class ReviewFragment extends Fragment {
 
                     try
                     {
-                        FileInputStream fileInputStream = getActivity().openFileInput("temp.dat");
+                        FileInputStream fileInputStream = getActivity().openFileInput(trackerFileNameList.get(getPosition()));
                         ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
                         tracker = (QuizTracker) objectInputStream.readObject();
                         objectInputStream.close();
@@ -238,7 +236,7 @@ public class ReviewFragment extends Fragment {
          */
         @Override
         public void onClick(View v) {
-            ReviewDetailFragment fragment = ReviewDetailFragment.newInstance(fileNames.get(getPosition()));
+            ReviewDetailFragment fragment = ReviewDetailFragment.newInstance(textFileNameList.get(getPosition()));
             ReplaceFragmentCommand.startNewFragment(getActivity(), fragment, false);
         }
     }
@@ -249,14 +247,14 @@ public class ReviewFragment extends Fragment {
 
     private class QuizListAdapter extends RecyclerView.Adapter<QuizListHolder> {
         // lists
-        private List<String> dateList;
+        private List<String> nameList;
 
         /**
          * Constructor
-         * @param dateList
+         * @param nameList
          */
-        public QuizListAdapter(List<String> dateList) {
-            this.dateList = dateList;
+        public QuizListAdapter(List<String> nameList) {
+            this.nameList = nameList;
         }
 
         /**
@@ -279,7 +277,7 @@ public class ReviewFragment extends Fragment {
          */
         @Override
         public void onBindViewHolder(QuizListHolder holder, int position) {;
-            holder.bindReview(dateList.get(position));
+            holder.bindReview(nameList.get(position));
         }
 
         /**
@@ -288,7 +286,7 @@ public class ReviewFragment extends Fragment {
          */
         @Override
         public int getItemCount() {
-            return dateList.size();
+            return nameList.size();
         }
     }
 

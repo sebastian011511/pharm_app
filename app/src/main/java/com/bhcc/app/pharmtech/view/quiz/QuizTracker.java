@@ -19,14 +19,16 @@ public class QuizTracker implements Serializable
     private String[] topicList;
     private String[] fieldList;
     private int numOfQuestions;
+    private String title;
 
 
 
-    public QuizTracker(String[] topicList, String[] fieldList, int numOfQuestions)
+    public QuizTracker(String[] topicList, String[] fieldList, int numOfQuestions, String title)
     {
         this.topicList = topicList;
         this. fieldList = fieldList;
         this.numOfQuestions = numOfQuestions;
+        this.title = title;
     }
 
     public void startQuiz(FragmentActivity currentActivity)
@@ -61,5 +63,10 @@ public class QuizTracker implements Serializable
             scoreList = new ArrayList<>();
         }
         scoreList.add(score);
+    }
+
+    public String getTitle()
+    {
+        return this.title;
     }
 }

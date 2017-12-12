@@ -85,7 +85,8 @@ public class QuizMultipleChoiceFragment extends Fragment
     boolean[] isViewCreated = null;
 
     // File name
-    private String fileName;
+    private String outPutFileName;
+    private String trackerFileName;
 
     private QuizTracker tracker;
 
@@ -106,6 +107,7 @@ public class QuizMultipleChoiceFragment extends Fragment
         bundle.putStringArray(EXTRA_FIELD_LIST, fieldList);
         bundle.putInt(EXTRA_NUM_QUIZ, numQuiz);
         bundle.putSerializable(EXTRA_QUIZ_TRACKER, tracker);
+
         QuizMultipleChoiceFragment quizFragment = new QuizMultipleChoiceFragment();
         quizFragment.setArguments(bundle);
         return quizFragment;
@@ -147,17 +149,27 @@ public class QuizMultipleChoiceFragment extends Fragment
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        topicList = getArguments().getStringArray(EXTRA_TOPIC_LIST);
+        fieldList = getArguments().getStringArray(EXTRA_FIELD_LIST);
+        numQuiz = getArguments().getInt(EXTRA_NUM_QUIZ, 0);
+        tracker = (QuizTracker) getArguments().getSerializable(EXTRA_QUIZ_TRACKER);
+
         File reviewInfo = new File(getActivity().getFilesDir(), MainActivity.REVIEW_FILE);
+        // create entries in REVIEW_FILE.txt that reference the tracker, and the .txt output
         try
         {
             PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(reviewInfo, true)));
-            SimpleDateFormat dateFormat = new SimpleDateFormat("MMddyy_HHmmss");
-            fileName = dateFormat.format(new Date()).toString();
-            printWriter.append(fileName + "\n");
+            outPutFileName = tracker.getTitle() + ".txt";
+            trackerFileName = tracker.getTitle() + ".dat";
+            printWriter.append(outPutFileName + "\n");
+            printWriter.append(trackerFileName + "\n");
             printWriter.close();
+            Log.d(TAG, "wrote file names to REVIEW_FILE");
         }
         catch (Exception ex)
         {
+            Log.e(TAG, "REVIEW_FILE not updated", ex);
         }
     }
 
@@ -178,11 +190,6 @@ public class QuizMultipleChoiceFragment extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        topicList = getArguments().getStringArray(EXTRA_TOPIC_LIST);
-        fieldList = getArguments().getStringArray(EXTRA_FIELD_LIST);
-        numQuiz = getArguments().getInt(EXTRA_NUM_QUIZ, 0);
-        tracker = (QuizTracker) getArguments().getSerializable(EXTRA_QUIZ_TRACKER);
-
         // Set up views
         setUpView();
     }
@@ -204,7 +211,6 @@ public class QuizMultipleChoiceFragment extends Fragment
     public void onPause()
     {
         super.onPause();
-        //getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
         saveToFile();
     }
 
@@ -543,18 +549,18 @@ public class QuizMultipleChoiceFragment extends Fragment
      */
     private void saveToFile()
     {
-        File file = new File(getActivity().getFilesDir(), fileName);
+        // create file, or overwrite it
+        File file = new File(getActivity().getFilesDir(), outPutFileName);
         try
         {
             PrintWriter printWriter = new PrintWriter(file);
-
             for (int i : indexOfSubmittedQuestion)
             {
                 printWriter.write(strQuestion[i] + "\n");
                 printWriter.write("Your Answer: " + strAnswer[i] + "\n");
                 printWriter.write("Correct Answer: " + (rbChoice1[correctChoice[i]][i]).getText() + "\n\n");
             }
-
+            Log.d(TAG, "output of quiz written to " + outPutFileName);
             printWriter.close();
         }
         catch (Exception ex)
@@ -563,11 +569,12 @@ public class QuizMultipleChoiceFragment extends Fragment
 
         try
         {
-            Log.d(TAG, "writing tracker file out");
-            FileOutputStream fileOutputStream = this.getActivity().openFileOutput("temp.dat", Context.MODE_PRIVATE);
+            FileOutputStream fileOutputStream = this.getActivity().openFileOutput(trackerFileName, Context.MODE_PRIVATE);
             ObjectOutputStream output = new ObjectOutputStream(fileOutputStream);
             output.writeObject(tracker);
             output.close();
+
+            Log.d(TAG, "tracker object written to " + trackerFileName);
         }
         catch (Exception e)
         {
