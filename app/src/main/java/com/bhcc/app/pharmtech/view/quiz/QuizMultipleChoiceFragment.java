@@ -293,8 +293,10 @@ public class QuizMultipleChoiceFragment extends Fragment
     {
         // update scores
         //mDrugNameTextView.setText(medicines.get(index).getGenericName());
-        mScoreTextView.setText("Done: " + done + "/" + numQuiz
-                + "\t\t\t" + "Correct: " + correct);
+
+        String results="Done: " + done + "/" + numQuiz
+                + "\t\t\t" + "Correct: " + correct;
+        mScoreTextView.setText(results);
 
         // Clear old views
         mSubmitButtonLayout.removeAllViews();
@@ -472,9 +474,11 @@ public class QuizMultipleChoiceFragment extends Fragment
                         {
                             rbChoice1[i][index].setEnabled(false);
                         }
+
+                        String results="Done: " + done + "/" + numQuiz
+                                + "\t\t\t" + "Correct: " + correct;
                         rgChoices[index].setEnabled(false);
-                        mScoreTextView.setText("Done: " + done + "/" + numQuiz
-                                + "\t\t\t" + "Correct: " + correct);
+                        mScoreTextView.setText(results);
                     }
                     catch (Exception ex)
                     {

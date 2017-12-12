@@ -2,16 +2,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:gravity="center">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/drug_of_day_title"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        android:textColor="@android:color/black"/>
+        android:orientation="horizontal"
+        style="?android:listSeparatorTextViewStyle"
+        android:gravity="center">
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_pills_dotd"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/drug_of_day_title"
+            android:textAlignment="center"
+            android:textSize="20sp"
+            android:textColor="@android:color/black"/>
+
+
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
@@ -20,8 +38,7 @@
         android:id="@+id/drugOfDayTitle"
         android:textAlignment="center"
         android:textSize="15sp"
-        android:textColor="@android:color/darker_gray"
-        style="?android:listSeparatorTextViewStyle"/>
+        android:textColor="@android:color/darker_gray"/>
 
     <LinearLayout
         android:layout_width="match_parent"
