@@ -1,10 +1,6 @@
 package com.bhcc.app.pharmtech.view.quiz;
 
-
-import android.content.Context;
-import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
-
 import com.bhcc.app.pharmtech.view.navigation.ReplaceFragmentCommand;
 
 import java.io.Serializable;
@@ -17,12 +13,14 @@ import java.util.ArrayList;
 public class QuizTracker implements Serializable
 {
     // to show specific information about this quiz
-    private ArrayList<Double> scoreList;
+    private ArrayList<Double> scoreList; // holds a list of scores for each time take
 
     // to take quiz again
     private String[] topicList;
     private String[] fieldList;
     private int numOfQuestions;
+
+
 
     public QuizTracker(String[] topicList, String[] fieldList, int numOfQuestions)
     {
@@ -30,10 +28,11 @@ public class QuizTracker implements Serializable
         this. fieldList = fieldList;
         this.numOfQuestions = numOfQuestions;
     }
+
     public void startQuiz(FragmentActivity currentActivity)
     {
         QuizMultipleChoiceFragment fragment = QuizMultipleChoiceFragment
-                .newInstance(topicList, fieldList, numOfQuestions);
+                .newInstance(topicList, fieldList, numOfQuestions, this);
         ReplaceFragmentCommand
                 .startNewFragment(currentActivity, fragment, true);
     }
@@ -52,6 +51,15 @@ public class QuizTracker implements Serializable
 
     public int getNumTimesTaken()
     {
-        return 0;
+        return scoreList.size();
+    }
+
+    public void addScore(double score)
+    {
+        if(scoreList == null)
+        {
+            scoreList = new ArrayList<>();
+        }
+        scoreList.add(score);
     }
 }

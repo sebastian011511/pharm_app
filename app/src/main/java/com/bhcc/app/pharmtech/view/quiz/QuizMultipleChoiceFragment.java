@@ -1,7 +1,9 @@
 package com.bhcc.app.pharmtech.view.quiz;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.graphics.Color;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -27,7 +29,9 @@ import com.bhcc.app.pharmtech.view.MainActivity;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -38,11 +42,13 @@ import java.util.Random;
 
 public class QuizMultipleChoiceFragment extends Fragment
 {
+    private static final String TAG = "QuizMultipleChoiceFrag";
 
     // Bundle argument id
     private static final String EXTRA_TOPIC_LIST = "extra: topic list";
     private static final String EXTRA_FIELD_LIST = "extra: field list";
     private static final String EXTRA_NUM_QUIZ = "extra: num quiz";
+    private static final String EXTRA_QUIZ_TRACKER = "extra: quiz tracker";
 
     // Static variables
     private final static int NUM_CHOICE = 4;
@@ -81,6 +87,8 @@ public class QuizMultipleChoiceFragment extends Fragment
     // File name
     private String fileName;
 
+    private QuizTracker tracker;
+
 
     /**
      * To create a fragment w/ bundle arguments
@@ -91,12 +99,13 @@ public class QuizMultipleChoiceFragment extends Fragment
      * @return QuizMultipleChoiceFragment
      */
     public static QuizMultipleChoiceFragment newInstance(String[] topicList, String[] fieldList,
-                                                         int numQuiz)
+                                                         int numQuiz, QuizTracker tracker)
     {
         Bundle bundle = new Bundle();
         bundle.putStringArray(EXTRA_TOPIC_LIST, topicList);
         bundle.putStringArray(EXTRA_FIELD_LIST, fieldList);
         bundle.putInt(EXTRA_NUM_QUIZ, numQuiz);
+        bundle.putSerializable(EXTRA_QUIZ_TRACKER, tracker);
         QuizMultipleChoiceFragment quizFragment = new QuizMultipleChoiceFragment();
         quizFragment.setArguments(bundle);
         return quizFragment;
@@ -172,6 +181,7 @@ public class QuizMultipleChoiceFragment extends Fragment
         topicList = getArguments().getStringArray(EXTRA_TOPIC_LIST);
         fieldList = getArguments().getStringArray(EXTRA_FIELD_LIST);
         numQuiz = getArguments().getInt(EXTRA_NUM_QUIZ, 0);
+        tracker = (QuizTracker) getArguments().getSerializable(EXTRA_QUIZ_TRACKER);
 
         // Set up views
         setUpView();
@@ -397,7 +407,7 @@ public class QuizMultipleChoiceFragment extends Fragment
                         }
                         rbChoice1[i][index].setText(temp2);
                     }
-                    while (choices.contains(temp2));  /*temp2.equals(temp1)*/
+                    while (choices.contains(temp2));
                     rbChoice1[i][index].setId(i);
 
                     rbChoice1[i][index].setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
@@ -425,16 +435,6 @@ public class QuizMultipleChoiceFragment extends Fragment
             Button button = new Button(getActivity());
             mSubmitButton[index] = button;
             mSubmitButton[index].setText("Submit");
-//            mSubmitButton[index].setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-//            mSubmitButton[index].setGravity(Gravity.BOTTOM);
-//            mSubmitButton[index].setGravity(Gravity.CENTER_HORIZONTAL);
-//            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-//                    LinearLayout.LayoutParams.WRAP_CONTENT,
-//                    LinearLayout.LayoutParams.WRAP_CONTENT
-//            );
-//            params.setMargins(0, 0, 0, toDP(25));
-//
-//            mSubmitButton[index].setLayoutParams(params);
             mSubmitButton[index].setOnClickListener(new View.OnClickListener()
             {
                 @Override
@@ -551,9 +551,6 @@ public class QuizMultipleChoiceFragment extends Fragment
             for (int i : indexOfSubmittedQuestion)
             {
                 printWriter.write(strQuestion[i] + "\n");
-                /*printWriter.write("Your Answer: " +
-                        ((RadioButton) getView().findViewById(rgChoices[i].getCheckedRadioButtonId())).getText() + "\n");
-                        */
                 printWriter.write("Your Answer: " + strAnswer[i] + "\n");
                 printWriter.write("Correct Answer: " + (rbChoice1[correctChoice[i]][i]).getText() + "\n\n");
             }
@@ -562,6 +559,19 @@ public class QuizMultipleChoiceFragment extends Fragment
         }
         catch (Exception ex)
         {
+        }
+
+        try
+        {
+            Log.d(TAG, "writing tracker file out");
+            FileOutputStream fileOutputStream = this.getActivity().openFileOutput("temp.dat", Context.MODE_PRIVATE);
+            ObjectOutputStream output = new ObjectOutputStream(fileOutputStream);
+            output.writeObject(tracker);
+            output.close();
+        }
+        catch (Exception e)
+        {
+
         }
     }
 
@@ -579,6 +589,8 @@ public class QuizMultipleChoiceFragment extends Fragment
 
         double percentage = (correct * 100.0 / numQuiz);
         Log.i("test", String.valueOf(percentage));
+
+        tracker.addScore(percentage);
 
         TextView tvScorePercentage = (TextView) dialog.findViewById(R.id.score_percentage);
         tvScorePercentage.setText(String.valueOf((int) percentage) + "%");

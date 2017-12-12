@@ -78,7 +78,6 @@ public class SelectQuizFragment extends Fragment
     public void onResume()
     {
         super.onResume();
-        //getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     /**
@@ -88,7 +87,6 @@ public class SelectQuizFragment extends Fragment
     public void onPause()
     {
         super.onPause();
-        //getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
     }
 
     /**
@@ -216,7 +214,7 @@ public class SelectQuizFragment extends Fragment
         }
 
 
-        ArrayList<String> spinnerArray = new ArrayList<String>();
+        ArrayList<String> spinnerArray = new ArrayList<>();
         spinnerArray.add("Multiple choice");
         //spinnerArray.add("Fill in the blank"); /*To remove the fill in the blank quiz*******************************************************/
 
@@ -276,11 +274,14 @@ public class SelectQuizFragment extends Fragment
 
                     if (spChooseQuizStyle.getSelectedItem().toString().equals("Multiple choice"))
                     {
-                        QuizMultipleChoiceFragment fragment = QuizMultipleChoiceFragment
-                                .newInstance(topicList, fieldList, numOfQuestions);
+                        QuizTracker tracker = new QuizTracker(topicList, fieldList, numOfQuestions);
+
+                       QuizMultipleChoiceFragment fragment = QuizMultipleChoiceFragment
+                                .newInstance(topicList, fieldList, numOfQuestions, tracker);
                         ReplaceFragmentCommand
                                 .startNewFragment(getActivity(), fragment, true);
                     }
+
 
                 }
             }

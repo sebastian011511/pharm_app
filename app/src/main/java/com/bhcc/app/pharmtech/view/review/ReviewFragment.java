@@ -9,16 +9,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bhcc.app.pharmtech.R;
+import com.bhcc.app.pharmtech.data.model.DrugOfDayManager;
 import com.bhcc.app.pharmtech.view.MainActivity;
 import com.bhcc.app.pharmtech.view.navigation.ReplaceFragmentCommand;
+import com.bhcc.app.pharmtech.view.quiz.QuizTracker;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +35,13 @@ import java.util.Scanner;
  */
 public class ReviewFragment extends Fragment {
 
+    public static final String TAG = "ReviewFragment";
+
     // Lists
     private List<String> dateList;
     private List<String> fileNames;
+
+    private String trackerFile = "temp.dat";
 
     // views
     private RecyclerView quizListRecyclerView;
@@ -134,6 +144,7 @@ public class ReviewFragment extends Fragment {
         private TextView idTextView;
         private TextView nameTextView;
         private ImageButton trash;
+        private Button btnTakeAgain;
 
         /**
          * Constructor
@@ -146,6 +157,7 @@ public class ReviewFragment extends Fragment {
             idTextView = (TextView) itemView.findViewById(R.id.quiz_review_id);
             nameTextView = (TextView) itemView.findViewById(R.id.quiz_review_date);
             trash = (ImageButton) itemView.findViewById(R.id.delete_button);
+            btnTakeAgain = (Button) itemView.findViewById(R.id.btn_take_again);
         }
 
 
@@ -189,6 +201,33 @@ public class ReviewFragment extends Fragment {
 
                     //update UI
                     ReplaceFragmentCommand.startNewFragment(getActivity(), new ReviewFragment(), false);
+                }
+            });
+            // set the tracker button to the right file
+            btnTakeAgain.setOnClickListener(new View.OnClickListener()
+            {
+                QuizTracker tracker;
+
+                @Override
+                public void onClick(View v)
+                {
+                    Log.d(TAG, "Take again clicked");
+
+                    try
+                    {
+                        FileInputStream fileInputStream = getActivity().openFileInput("temp.dat");
+                        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+                        tracker = (QuizTracker) objectInputStream.readObject();
+                        objectInputStream.close();
+                        fileInputStream.close();
+
+                        tracker.startQuiz(getActivity());
+                    }
+                    catch(Exception ieo)
+                    {
+                        Log.e(TAG, "file prblem", ieo);
+                    }
+
                 }
             });
         }

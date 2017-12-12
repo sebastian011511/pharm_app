@@ -3,7 +3,6 @@ package com.bhcc.app.pharmtech.view;
 import com.bhcc.app.pharmtech.R;
 import com.bhcc.app.pharmtech.data.MedicineLab;
 import com.bhcc.app.pharmtech.data.model.DrugOfDayManager;
-import com.bhcc.app.pharmtech.data.model.Medicine;
 import com.bhcc.app.pharmtech.view.filter.FilterFragment;
 import com.bhcc.app.pharmtech.view.navigation.ReplaceFragmentCommand;
 import com.bhcc.app.pharmtech.view.quiz.SelectQuizFragment;
@@ -39,7 +38,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -69,7 +67,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Shows drug of the day if hasn't been displayed yet.
+     * Shows 'drug of the day' if hasn't been displayed in the timer interval defined by
+     * DrugOfDayManager
      * @author Nils
      */
     private void showDrugOfDay()
@@ -117,7 +116,7 @@ public class MainActivity extends AppCompatActivity
         }
         catch (Exception e)
         {
-            Log.d(TAG, e.getMessage());
+            Log.e(TAG, e.getMessage(), e);
             e.printStackTrace();
         }
     }
