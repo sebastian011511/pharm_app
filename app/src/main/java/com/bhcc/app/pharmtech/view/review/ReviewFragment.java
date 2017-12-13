@@ -9,8 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -145,8 +145,10 @@ public class ReviewFragment extends Fragment
         private TextView idTextView;
         private TextView nameTextView;
         private ImageButton trash;
-        private Button btnTakeAgain;
         private TextView tvNumTimesTaken;
+
+        private ImageView imgTakeAgain;
+        private TextView tvTakeAgain;
 
         /**
          * Constructor
@@ -161,7 +163,10 @@ public class ReviewFragment extends Fragment
             idTextView = (TextView) itemView.findViewById(R.id.quiz_review_id);
             nameTextView = (TextView) itemView.findViewById(R.id.quiz_review_date);
             trash = (ImageButton) itemView.findViewById(R.id.delete_button);
-            btnTakeAgain = (Button) itemView.findViewById(R.id.btn_take_again);
+
+            imgTakeAgain = (ImageView) itemView.findViewById(R.id.image_retake);
+            tvTakeAgain=(TextView)itemView.findViewById(R.id.txt_take_again);
+
             tvNumTimesTaken = (TextView) itemView.findViewById(R.id.text_times_taken);
         }
 
@@ -223,13 +228,42 @@ public class ReviewFragment extends Fragment
                 }
             });
 
-            btnTakeAgain.setOnClickListener(new View.OnClickListener()
+            tvTakeAgain.setOnClickListener(new View.OnClickListener()
             {
                 QuizTracker tracker;
 
                 @Override
                 public void onClick(View v)
                 {
+                    Log.d(TAG, "Take again clicked");
+
+                    try
+                    {
+                        // CALL METHOD
+                        FileInputStream fileInputStream = getActivity().openFileInput(trackerFileNameList.get(getPosition()));
+                        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+                        tracker = (QuizTracker) objectInputStream.readObject();
+                        objectInputStream.close();
+                        fileInputStream.close();
+
+                        // Take the quiz again
+                        tracker.startQuiz(getActivity());
+                    }
+                    catch (Exception ieo)
+                    {
+                        Log.e(TAG, "file problem", ieo);
+                    }
+
+                }
+            });
+
+            imgTakeAgain.setOnClickListener(new View.OnClickListener() {
+
+                QuizTracker tracker;
+
+                @Override
+                public void onClick(View v) {
+
                     Log.d(TAG, "Take again clicked");
 
                     try

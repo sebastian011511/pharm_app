@@ -71,4 +71,5 @@
     <string name="drug_of_day_title">Drug of The Day</string>
     <string name="btn_close_drug_of_day">Close</string>
     <string name="btn_show_drug_of_day">Show Me This Card</string>
+    <string name="retake_quiz">Retake Quiz</string>
 </resources>
