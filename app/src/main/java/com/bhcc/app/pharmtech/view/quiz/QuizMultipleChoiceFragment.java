@@ -3,7 +3,6 @@ package com.bhcc.app.pharmtech.view.quiz;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -33,10 +32,8 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -49,13 +46,15 @@ public class QuizMultipleChoiceFragment extends Fragment
     private static final String EXTRA_FIELD_LIST = "extra: field list";
     private static final String EXTRA_NUM_QUIZ = "extra: num quiz";
     private static final String EXTRA_QUIZ_TRACKER = "extra: quiz tracker";
+    private static final String EXTRA_IS_RETAKE = "extra: is retake";
 
-    // Static variables
+    // static usage
     private final static int NUM_CHOICE = 4;
-    private static int numQuiz;
-    private static int index = 0;
-    private static int done = 0;
-    private static int correct = 0;
+    // for each instance
+    private int numQuiz;
+    private int index = 0;
+    private int done = 0;
+    private int correct = 0;
 
     // Lists
     private String[] topicList;
@@ -66,13 +65,11 @@ public class QuizMultipleChoiceFragment extends Fragment
     // Views & Widgets
     private LinearLayout mLinearLayout;
     private LinearLayout mSubmitButtonLayout;
-
     private TextView mScoreTextView;
     private TextView mQuestion;
     private Button[] mSubmitButton;
     private ImageButton mNextButton;
     private ImageButton mPreviousButton;
-
     private TextView[] tvQuestion = null;
     private RadioGroup[] rgChoices = null;
     private RadioButton[][] rbChoice1 = null;
@@ -81,14 +78,18 @@ public class QuizMultipleChoiceFragment extends Fragment
     private int[] correctChoice;
     private String[] strQuestion = null;
     private String[] strAnswer = null;
-    private ArrayList<Integer> indexOfSubmittedQuestion;
+    private ArrayList<Integer> indexOfSubmittedQuestionList;
     boolean[] isViewCreated = null;
 
     // File name
-    private String fileName;
+    private String outPutFileName;
+    private String trackerFileName;
 
+    // to be saved and hold things about each quiz
     private QuizTracker tracker;
 
+    // flags if operations to create new file need to happen or not
+    private boolean isRetake;
 
     /**
      * To create a fragment w/ bundle arguments
@@ -98,16 +99,19 @@ public class QuizMultipleChoiceFragment extends Fragment
      * @param numQuiz
      * @return QuizMultipleChoiceFragment
      */
-    public static QuizMultipleChoiceFragment newInstance(String[] topicList, String[] fieldList,
-                                                         int numQuiz, QuizTracker tracker)
+    public static QuizMultipleChoiceFragment newInstance(String[] topicList, String[] fieldList, int numQuiz, QuizTracker tracker, boolean isRetake)
     {
         Bundle bundle = new Bundle();
+
         bundle.putStringArray(EXTRA_TOPIC_LIST, topicList);
         bundle.putStringArray(EXTRA_FIELD_LIST, fieldList);
         bundle.putInt(EXTRA_NUM_QUIZ, numQuiz);
         bundle.putSerializable(EXTRA_QUIZ_TRACKER, tracker);
+        bundle.putBoolean(EXTRA_IS_RETAKE, isRetake);
+
         QuizMultipleChoiceFragment quizFragment = new QuizMultipleChoiceFragment();
         quizFragment.setArguments(bundle);
+
         return quizFragment;
     }
 
@@ -121,8 +125,7 @@ public class QuizMultipleChoiceFragment extends Fragment
      */
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
     {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.activity_quiz, container, false);
@@ -137,7 +140,6 @@ public class QuizMultipleChoiceFragment extends Fragment
 
     }
 
-
     /**
      * To create a review file for the quiz
      *
@@ -147,20 +149,46 @@ public class QuizMultipleChoiceFragment extends Fragment
     public void onCreate(@Nullable Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        File reviewInfo = new File(getActivity().getFilesDir(), MainActivity.REVIEW_FILE);
-        try
+
+        topicList = getArguments().getStringArray(EXTRA_TOPIC_LIST);
+        fieldList = getArguments().getStringArray(EXTRA_FIELD_LIST);
+        numQuiz = getArguments().getInt(EXTRA_NUM_QUIZ, 0);
+        tracker = (QuizTracker) getArguments().getSerializable(EXTRA_QUIZ_TRACKER);
+        isRetake = getArguments().getBoolean(EXTRA_IS_RETAKE);
+
+        // if its the first time user is taking quiz, and a quizName.txt and quizName.dat file to the file 'REVIEW_FILE'
+        if(!isRetake)
         {
-            PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(reviewInfo, true)));
-            SimpleDateFormat dateFormat = new SimpleDateFormat("MMddyy_HHmmss");
-            fileName = dateFormat.format(new Date()).toString();
-            printWriter.append(fileName + "\n");
-            printWriter.close();
+            // get the file that holds the index for files corresponding to quizzes taken
+            File reviewInfo = new File(getActivity().getFilesDir(), MainActivity.REVIEW_FILE);
+
+            // create entries in REVIEW_FILE.txt that reference this tracker, and this .txt output
+            try
+            {
+                PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(reviewInfo, true)));
+                outPutFileName = tracker.getTitle() + ".txt";
+                trackerFileName = tracker.getTitle() + ".dat";
+                printWriter.append(outPutFileName + "\n");
+                printWriter.append(trackerFileName + "\n");
+                printWriter.close();
+                Log.d(TAG, "wrote file names to REVIEW_FILE");
+            }
+            catch (Exception ex)
+            {
+                Log.e(TAG, "REVIEW_FILE not updated", ex);
+            }
         }
-        catch (Exception ex)
+        // otherwise, REVIEW_FILE knows about the .txt and the .dat files. Get them from Tracker object
+        else
         {
+            outPutFileName = tracker.getTitle() + ".txt";
+            trackerFileName = tracker.getTitle() + ".dat";
+
+            Log.d(TAG, "User is retaking " + tracker.getTitle());
+            Log.d(TAG, "User has taken this quiz " + tracker.getNumTimesTaken() + " and is about to take it again");
+            Log.d(TAG, "Currently, their average is " + tracker.getAverageScore());
         }
     }
-
 
     @Override
     public void onSaveInstanceState(Bundle outState)
@@ -178,12 +206,6 @@ public class QuizMultipleChoiceFragment extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
         super.onViewCreated(view, savedInstanceState);
-        topicList = getArguments().getStringArray(EXTRA_TOPIC_LIST);
-        fieldList = getArguments().getStringArray(EXTRA_FIELD_LIST);
-        numQuiz = getArguments().getInt(EXTRA_NUM_QUIZ, 0);
-        tracker = (QuizTracker) getArguments().getSerializable(EXTRA_QUIZ_TRACKER);
-
-        // Set up views
         setUpView();
     }
 
@@ -194,7 +216,6 @@ public class QuizMultipleChoiceFragment extends Fragment
     public void onResume()
     {
         super.onResume();
-        //getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     /**
@@ -204,7 +225,6 @@ public class QuizMultipleChoiceFragment extends Fragment
     public void onPause()
     {
         super.onPause();
-        //getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
         saveToFile();
     }
 
@@ -213,8 +233,7 @@ public class QuizMultipleChoiceFragment extends Fragment
      */
     private void setUpView()
     {
-
-        // initialize static variables
+        // initialize variables for this quiz
         index = 0;
         done = 0;
         correct = 0;
@@ -233,7 +252,7 @@ public class QuizMultipleChoiceFragment extends Fragment
         rgChoices = new RadioGroup[numQuiz];
         rbChoice1 = new RadioButton[NUM_CHOICE][numQuiz];
 
-        indexOfSubmittedQuestion = new ArrayList<>();
+        indexOfSubmittedQuestionList = new ArrayList<>();
 
         // set up boolean flags to false
         isViewCreated = new boolean[numQuiz];
@@ -446,7 +465,7 @@ public class QuizMultipleChoiceFragment extends Fragment
                     try
                     {
                         // add the index to the submit list
-                        indexOfSubmittedQuestion.add(index);
+                        indexOfSubmittedQuestionList.add(index);
 
                         // find the checked radio button
                         int checkedId = rgChoices[index].getCheckedRadioButtonId();
@@ -547,18 +566,18 @@ public class QuizMultipleChoiceFragment extends Fragment
      */
     private void saveToFile()
     {
-        File file = new File(getActivity().getFilesDir(), fileName);
+        // create file, or overwrite it
+        File file = new File(getActivity().getFilesDir(), outPutFileName);
         try
         {
             PrintWriter printWriter = new PrintWriter(file);
-
-            for (int i : indexOfSubmittedQuestion)
+            for (int i : indexOfSubmittedQuestionList)
             {
                 printWriter.write(strQuestion[i] + "\n");
                 printWriter.write("Your Answer: " + strAnswer[i] + "\n");
                 printWriter.write("Correct Answer: " + (rbChoice1[correctChoice[i]][i]).getText() + "\n\n");
             }
-
+            Log.d(TAG, "output of quiz written to " + outPutFileName);
             printWriter.close();
         }
         catch (Exception ex)
@@ -567,11 +586,12 @@ public class QuizMultipleChoiceFragment extends Fragment
 
         try
         {
-            Log.d(TAG, "writing tracker file out");
-            FileOutputStream fileOutputStream = this.getActivity().openFileOutput("temp.dat", Context.MODE_PRIVATE);
+            FileOutputStream fileOutputStream = this.getActivity().openFileOutput(trackerFileName, Context.MODE_PRIVATE);
             ObjectOutputStream output = new ObjectOutputStream(fileOutputStream);
             output.writeObject(tracker);
             output.close();
+
+            Log.d(TAG, "tracker object written to " + trackerFileName);
         }
         catch (Exception e)
         {
@@ -579,13 +599,11 @@ public class QuizMultipleChoiceFragment extends Fragment
         }
     }
 
-
     /**
-     * To Show dialog for the sorting selection
+     * To Show dialog for the summary
      */
     private void showSummaryDialog()
     {
-
         // custom dialog
         final Dialog dialog = new Dialog(getContext());
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -594,6 +612,7 @@ public class QuizMultipleChoiceFragment extends Fragment
         double percentage = (correct * 100.0 / numQuiz);
         Log.i("test", String.valueOf(percentage));
 
+        // now that we calculated the percentage, give that to the tracker.
         tracker.addScore(percentage);
 
         TextView tvScorePercentage = (TextView) dialog.findViewById(R.id.score_percentage);

@@ -12,11 +12,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,21 +24,21 @@ import com.bhcc.app.pharmtech.data.MedicineSchema;
 import com.bhcc.app.pharmtech.data.model.Medicine;
 import com.bhcc.app.pharmtech.view.navigation.ReplaceFragmentCommand;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class SelectQuizFragment extends Fragment
 {
+    public static final String TAG = "SelectQuizFragment";
+
     //Static variables
     private static final int STUDY_TOPIC_CHECKED_LIST = 0;
     private static final int STUDY_FIELD_CHECKED_LIST = 1;
 
     // Views & Widgets
-    private TextInputLayout amountOfQuestionTextView;
-    private EditText amountOfQuestionEditText;
-    private TextView tvChooseQuizStyle;
+    private TextInputLayout amountOfQuestionTextInput;
+    private EditText quizTitleEditText;
     private View rootView;
 
     @Override
@@ -101,8 +99,11 @@ public class SelectQuizFragment extends Fragment
         LinearLayout studyFieldsLayout = (LinearLayout) rootView
                 .findViewById(R.id.study_fields_layout);
 
-        amountOfQuestionTextView = (TextInputLayout) rootView.findViewById(R.id.question_qty_text);
+        amountOfQuestionTextInput = (TextInputLayout) rootView.findViewById(R.id.question_qty_text);
         final EditText amountOfQuestionEditText = (EditText) rootView.findViewById(R.id.quiz_question_qty);
+
+
+        quizTitleEditText = (EditText) rootView.findViewById(R.id.quiz_title_input);
 
         /**
          * Configure checkboxes for study Topics
@@ -216,13 +217,6 @@ public class SelectQuizFragment extends Fragment
 
         ArrayList<String> spinnerArray = new ArrayList<>();
         spinnerArray.add("Multiple choice");
-        //spinnerArray.add("Fill in the blank"); /*To remove the fill in the blank quiz*******************************************************/
-
-
-        final Spinner spChooseQuizStyle = (Spinner) rootView.findViewById(R.id.quiz_style);
-        ArrayAdapter<String> quizStyle = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_dropdown_item, spinnerArray);
-        spChooseQuizStyle.setAdapter(quizStyle);
 
         class StartQuizHandler implements View.OnClickListener
         {
@@ -235,6 +229,10 @@ public class SelectQuizFragment extends Fragment
 
                 // Number of questions
                 int numOfQuestions;
+
+                // title
+                String title = quizTitleEditText.getText().toString();
+                Log.d(TAG, "the tite of this quiz is: " + title);
 
                 // Try to get number of questions from input
                 try
@@ -270,19 +268,13 @@ public class SelectQuizFragment extends Fragment
 
                     String[] topicList = toStringArray(studyTopicCheckedList);
                     String[] fieldList = toStringArray(studyFieldCheckedList);
+                    // create a tracker if user wishes to track progress
+                    QuizTracker tracker = new QuizTracker(topicList, fieldList, numOfQuestions, title);
+                    // start quiz
 
-
-                    if (spChooseQuizStyle.getSelectedItem().toString().equals("Multiple choice"))
-                    {
-                        QuizTracker tracker = new QuizTracker(topicList, fieldList, numOfQuestions);
-
-                       QuizMultipleChoiceFragment fragment = QuizMultipleChoiceFragment
-                                .newInstance(topicList, fieldList, numOfQuestions, tracker);
-                        ReplaceFragmentCommand
-                                .startNewFragment(getActivity(), fragment, true);
-                    }
-
-
+                    Log.d(TAG, "Starting Quiz");
+                    QuizMultipleChoiceFragment fragment = QuizMultipleChoiceFragment.newInstance(topicList, fieldList, numOfQuestions, tracker, false);
+                    ReplaceFragmentCommand.startNewFragment(getActivity(), fragment, true);
                 }
             }
         }
@@ -351,12 +343,12 @@ public class SelectQuizFragment extends Fragment
             if (tempMedicines != null)
             {
                 String maxQuestion = String.valueOf(tempMedicines.size());
-                amountOfQuestionTextView
+                amountOfQuestionTextInput
                         .setHint("Enter amount of questions (up to " + maxQuestion + ")");
                 Log.i("test", String.valueOf(findMedicinesQuiz(checkedList).size()));
             } else
             {
-                amountOfQuestionTextView.setHint("Enter amount of Questions");
+                amountOfQuestionTextInput.setHint("Enter amount of Questions");
                 Log.i("test", String.valueOf(0));
             }
         }

@@ -115,6 +115,7 @@ public class MedicineListFragment extends Fragment {
 
                 // update UI
                 updateUI();
+                searchView.clearFocus();
 
                 return true;
             }
@@ -127,7 +128,7 @@ public class MedicineListFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String s) {
 
-                // if there is nothing in the serach bar
+                // if there is nothing in the search bar
                 // show every drugs
                 if (s.length() == 0) {
                     MedicineLab.get(getContext())
