@@ -7,7 +7,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Created by Nils on 11/28/2017.
+ * @author Nils
+ *
+ * This class holds the parameters of a quiz, and the methods to take it again.
+ * It can be written to a file, as an object, to save and reload it.
  */
 
 public class QuizTracker implements Serializable
@@ -21,8 +24,12 @@ public class QuizTracker implements Serializable
     private int numOfQuestions;
     private String title;
 
-
-
+    /**
+     * @param topicList List of topics covered in quiz.
+     * @param fieldList list of fields covered in quiz.
+     * @param numOfQuestions number of questions  in quiz.
+     * @param title title to identify the quiz so user can retake it.
+     */
     public QuizTracker(String[] topicList, String[] fieldList, int numOfQuestions, String title)
     {
         this.topicList = topicList;
@@ -33,10 +40,8 @@ public class QuizTracker implements Serializable
 
     public void startQuiz(FragmentActivity currentActivity)
     {
-        QuizMultipleChoiceFragment fragment = QuizMultipleChoiceFragment
-                .newInstance(topicList, fieldList, numOfQuestions, this);
-        ReplaceFragmentCommand
-                .startNewFragment(currentActivity, fragment, true);
+        QuizMultipleChoiceFragment fragment = QuizMultipleChoiceFragment.newInstance(topicList, fieldList, numOfQuestions, this, true);
+        ReplaceFragmentCommand.startNewFragment(currentActivity, fragment, true);
     }
 
     public Double getAverageScore()

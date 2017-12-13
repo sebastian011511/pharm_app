@@ -273,7 +273,7 @@ public class SelectQuizFragment extends Fragment
                     // start quiz
 
                     Log.d(TAG, "Starting Quiz");
-                    QuizMultipleChoiceFragment fragment = QuizMultipleChoiceFragment.newInstance(topicList, fieldList, numOfQuestions, tracker);
+                    QuizMultipleChoiceFragment fragment = QuizMultipleChoiceFragment.newInstance(topicList, fieldList, numOfQuestions, tracker, false);
                     ReplaceFragmentCommand.startNewFragment(getActivity(), fragment, true);
                 }
             }

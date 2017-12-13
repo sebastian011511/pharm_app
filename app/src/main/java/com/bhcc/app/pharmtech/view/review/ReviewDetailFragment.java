@@ -3,6 +3,7 @@ package com.bhcc.app.pharmtech.view.review;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,9 @@ import java.util.Scanner;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ReviewDetailFragment extends Fragment {
+public class ReviewDetailFragment extends Fragment
+{
+    private static final String TAG = "ReviewDetailFragment";
 
     // Bundle argument id
     private static final String EXTRA_FILE_NAME = "extra: fileName";
@@ -29,10 +32,12 @@ public class ReviewDetailFragment extends Fragment {
 
     /**
      * To crate a new fragment w/ bundle arguments
+     *
      * @param fileName
      * @return ReviewDetailFragment
      */
-    public static ReviewDetailFragment newInstance(String fileName) {
+    public static ReviewDetailFragment newInstance(String fileName)
+    {
         Bundle bundle = new Bundle();
         bundle.putSerializable(EXTRA_FILE_NAME, fileName);
         ReviewDetailFragment reviewDetailFragment = new ReviewDetailFragment();
@@ -40,34 +45,42 @@ public class ReviewDetailFragment extends Fragment {
         return reviewDetailFragment;
     }
 
-    public ReviewDetailFragment() {
+    public ReviewDetailFragment()
+    {
         // Required empty public constructor
     }
 
 
     /**
      * To set up views & read data from the file
+     *
      * @param inflater
      * @param container
      * @param savedInstanceState
      * @return view
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
-        // Read data from the file
-        // Store each line to the string
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        // Read data from the file and store each line to the string
         fileName = getArguments().getSerializable(EXTRA_FILE_NAME).toString();
         File file = new File(getActivity().getFilesDir(), fileName);
         String temp = "\n";
 
-        try {
+        try
+        {
             Scanner scanner = new Scanner(file);
-            while (scanner.hasNextLine()) {
+            while (scanner.hasNextLine())
+            {
                 temp += scanner.nextLine() + '\n';
             }
+
+            scanner.close();
         }
-        catch (Exception ex) {}
+        catch (Exception ex)
+        {
+            Log.e(TAG, "Error reading quiz txt file", ex);
+        }
 
         // Set up views
         View view = inflater.inflate(R.layout.fragment_review_detail, container, false);
@@ -76,8 +89,6 @@ public class ReviewDetailFragment extends Fragment {
         mReviewDetail = (TextView) view.findViewById(R.id.text_view_quiz_detail);
         mReviewDetail.setText(temp);
 
-        // Inflate the layout for this fragment
         return view;
     }
-
 }
