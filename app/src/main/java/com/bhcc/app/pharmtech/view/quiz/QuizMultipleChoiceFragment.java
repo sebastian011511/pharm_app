@@ -156,8 +156,8 @@ public class QuizMultipleChoiceFragment extends Fragment
         tracker = (QuizTracker) getArguments().getSerializable(EXTRA_QUIZ_TRACKER);
         isRetake = getArguments().getBoolean(EXTRA_IS_RETAKE);
 
-        // if its the first time user is taking quiz, and a quizName.txt and quizName.dat file to the file 'REVIEW_FILE'
-        if(!isRetake)
+        // if its the first time user is taking quiz, add a quizName.txt and quizName.dat file to the file 'REVIEW_FILE'
+        if(!isRetake && tracker != null)
         {
             // get the file that holds the index for files corresponding to quizzes taken
             File reviewInfo = new File(getActivity().getFilesDir(), MainActivity.REVIEW_FILE);
@@ -179,7 +179,7 @@ public class QuizMultipleChoiceFragment extends Fragment
             }
         }
         // otherwise, REVIEW_FILE knows about the .txt and the .dat files. Get them from Tracker object
-        else
+        else if(tracker != null)
         {
             outPutFileName = tracker.getTitle() + ".txt";
             trackerFileName = tracker.getTitle() + ".dat";
@@ -225,7 +225,14 @@ public class QuizMultipleChoiceFragment extends Fragment
     public void onPause()
     {
         super.onPause();
-        saveToFile();
+        if(tracker != null)
+        {
+            saveToFile();
+        }
+        else
+        {
+            Log.d(TAG, "Tracker is null. Untracked Quiz");
+        }
     }
 
     /**
@@ -613,7 +620,10 @@ public class QuizMultipleChoiceFragment extends Fragment
         Log.i("test", String.valueOf(percentage));
 
         // now that we calculated the percentage, give that to the tracker.
-        tracker.addScore(percentage);
+        if(tracker != null)
+        {
+            tracker.addScore(percentage);
+        }
 
         TextView tvScorePercentage = (TextView) dialog.findViewById(R.id.score_percentage);
         tvScorePercentage.setText(String.valueOf((int) percentage) + "%");

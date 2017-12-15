@@ -85,7 +85,7 @@ public class ReviewFragment extends Fragment
                 String tempTrackerFile = fileInput.nextLine();
                 trackerFileNameList.add(tempTrackerFile);
 
-                // todo drop filename extesnion here
+                tempTextFile = tempTextFile.replace(".txt", "");
                 nameList.add(tempTextFile);
             }
 
@@ -149,6 +149,7 @@ public class ReviewFragment extends Fragment
 
         private ImageView imgTakeAgain;
         private TextView tvTakeAgain;
+        private TextView tvAvgScore;
 
         /**
          * Constructor
@@ -168,6 +169,7 @@ public class ReviewFragment extends Fragment
             tvTakeAgain=(TextView)itemView.findViewById(R.id.txt_take_again);
 
             tvNumTimesTaken = (TextView) itemView.findViewById(R.id.text_times_taken);
+            tvAvgScore = (TextView) itemView.findViewById(R.id.text_avg_score);
         }
 
 
@@ -184,6 +186,7 @@ public class ReviewFragment extends Fragment
 
             QuizTracker tracker = getTracker(trackerFileNameList.get(getPosition()));
             tvNumTimesTaken.setText("Times Taken: " + Integer.toString(tracker.getNumTimesTaken()));
+            tvAvgScore.setText("Average Score: " + Double.toString(round(tracker.getAverageScore(), 2)));
 
 
             // Delete Review Part
@@ -239,26 +242,19 @@ public class ReviewFragment extends Fragment
 
                     try
                     {
-                        // CALL METHOD
-                        FileInputStream fileInputStream = getActivity().openFileInput(trackerFileNameList.get(getPosition()));
-                        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-                        tracker = (QuizTracker) objectInputStream.readObject();
-                        objectInputStream.close();
-                        fileInputStream.close();
-
+                        tracker = getTracker(trackerFileNameList.get(getPosition()));
                         // Take the quiz again
                         tracker.startQuiz(getActivity());
                     }
-                    catch (Exception ieo)
+                    catch (Exception ioe)
                     {
-                        Log.e(TAG, "file problem", ieo);
+                        Log.e(TAG, "file problem", ioe);
                     }
-
                 }
             });
 
-            imgTakeAgain.setOnClickListener(new View.OnClickListener() {
-
+            imgTakeAgain.setOnClickListener(new View.OnClickListener()
+            {
                 QuizTracker tracker;
 
                 @Override
@@ -375,5 +371,11 @@ public class ReviewFragment extends Fragment
         }
 
         return tracker;
+    }
+
+    public static double round(double value, int places)
+    {
+        double scale = Math.pow(10, places);
+        return Math.round(value * scale) / scale;
     }
 }

@@ -22,11 +22,15 @@ import com.bhcc.app.pharmtech.R;
 import com.bhcc.app.pharmtech.data.MedicineLab;
 import com.bhcc.app.pharmtech.data.MedicineSchema;
 import com.bhcc.app.pharmtech.data.model.Medicine;
+import com.bhcc.app.pharmtech.view.MainActivity;
 import com.bhcc.app.pharmtech.view.navigation.ReplaceFragmentCommand;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 public class SelectQuizFragment extends Fragment
 {
@@ -223,22 +227,29 @@ public class SelectQuizFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-
                 // List of chosen medicines
                 List<Medicine> medicinesQuiz = findMedicinesQuiz(studyTopicCheckedList);
-
                 // Number of questions
                 int numOfQuestions;
+                // tracker
+                QuizTracker tracker = null;
 
                 // title
                 String title = quizTitleEditText.getText().toString();
-                Log.d(TAG, "the tite of this quiz is: " + title);
+
+                int i = 1;
+                while(!isNewTitle(title))
+                {
+                    Log.d(TAG, "Title is not new, making new title");
+                    title = title + i;
+                    i++;
+                }
+
 
                 // Try to get number of questions from input
                 try
                 {
-                    numOfQuestions = Integer
-                            .parseInt(amountOfQuestionEditText.getText().toString());
+                    numOfQuestions = Integer.parseInt(amountOfQuestionEditText.getText().toString());
                 }
                 catch (Exception ex)
                 {
@@ -269,10 +280,13 @@ public class SelectQuizFragment extends Fragment
                     String[] topicList = toStringArray(studyTopicCheckedList);
                     String[] fieldList = toStringArray(studyFieldCheckedList);
                     // create a tracker if user wishes to track progress
-                    QuizTracker tracker = new QuizTracker(topicList, fieldList, numOfQuestions, title);
+                    if(!title.equals(""))
+                    {
+                        tracker = new QuizTracker(topicList, fieldList, numOfQuestions, title);
+                        Toast.makeText(getContext(), "Quiz is being tracked: " + title, Toast.LENGTH_LONG).show();
+                    }
                     // start quiz
-
-                    Log.d(TAG, "Starting Quiz");
+                    Log.d(TAG, "Starting Quiz, title: " + title);
                     QuizMultipleChoiceFragment fragment = QuizMultipleChoiceFragment.newInstance(topicList, fieldList, numOfQuestions, tracker, false);
                     ReplaceFragmentCommand.startNewFragment(getActivity(), fragment, true);
                 }
@@ -397,5 +411,39 @@ public class SelectQuizFragment extends Fragment
         tempStrings = list.toArray(tempStrings);
 
         return tempStrings;
+    }
+
+    private boolean isNewTitle(String title)
+    {
+        boolean isNew = true;
+
+        File reviewInfo = new File(getActivity().getFilesDir(), MainActivity.REVIEW_FILE);
+        try
+        {
+            Scanner fileInput = new Scanner(reviewInfo);
+            while (fileInput.hasNextLine())
+            {
+                // add to file name list
+                String tempTextFile = fileInput.nextLine();
+                tempTextFile = tempTextFile.replace(".txt", "");
+
+                if(tempTextFile.equals(title))
+                {
+                    return false;
+                }
+
+                // skip the next line, which contains the tracker title
+                fileInput.nextLine();
+            }
+
+            fileInput.close();
+
+        }
+        catch (FileNotFoundException e)
+        {
+            Log.e(TAG, "problem reading names of existing quiz names", e);
+        }
+
+        return isNew;
     }
 }

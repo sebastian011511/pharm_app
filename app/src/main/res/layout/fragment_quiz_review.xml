@@ -53,6 +53,15 @@
             android:gravity="left"
             android:layout_weight="50"/>
 
+        <TextView
+            android:id="@+id/text_avg_score"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:gravity="left"
+            android:layout_weight="50"/>
+
 
     </LinearLayout>
 
