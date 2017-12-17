@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class QuizTracker implements Serializable
 {
     // to show specific information about this quiz
-    private ArrayList<Double> scoreList; // holds a list of scores for each time take
+    private ArrayList<Double> scoreList = new ArrayList<>(); // holds a list of scores for each time take
 
     // to take quiz again
     private String[] topicList;
@@ -63,11 +63,12 @@ public class QuizTracker implements Serializable
 
     public void addScore(double score)
     {
-        if(scoreList == null)
-        {
-            scoreList = new ArrayList<>();
-        }
         scoreList.add(score);
+    }
+
+    public void addScoreToLastIndex(double score)
+    {
+        scoreList.set(scoreList.size() - 1, score);
     }
 
     public String getTitle()

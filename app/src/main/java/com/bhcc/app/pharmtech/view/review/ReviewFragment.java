@@ -132,7 +132,7 @@ public class ReviewFragment extends Fragment
             quizListRecyclerView.setAdapter(quizListAdapter);
         } else
         {
-            Toast.makeText(getContext(), "Take a quiz first!!!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Take a quiz first.", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -264,21 +264,14 @@ public class ReviewFragment extends Fragment
 
                     try
                     {
-                        // CALL METHOD
-                        FileInputStream fileInputStream = getActivity().openFileInput(trackerFileNameList.get(getPosition()));
-                        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
-                        tracker = (QuizTracker) objectInputStream.readObject();
-                        objectInputStream.close();
-                        fileInputStream.close();
-
+                        tracker = getTracker(trackerFileNameList.get(getPosition()));
                         // Take the quiz again
                         tracker.startQuiz(getActivity());
                     }
-                    catch (Exception ieo)
+                    catch (Exception ioe)
                     {
-                        Log.e(TAG, "file problem", ieo);
+                        Log.e(TAG, "file problem", ioe);
                     }
-
                 }
             });
         }
@@ -292,7 +285,7 @@ public class ReviewFragment extends Fragment
         public void onClick(View v)
         {
             ReviewDetailFragment fragment = ReviewDetailFragment.newInstance(textFileNameList.get(getPosition()));
-            ReplaceFragmentCommand.startNewFragment(getActivity(), fragment, false);
+            ReplaceFragmentCommand.startNewFragment(getActivity(), fragment, true);
         }
     }
 

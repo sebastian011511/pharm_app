@@ -25,6 +25,8 @@ import com.bhcc.app.pharmtech.data.MedicineLab;
 import com.bhcc.app.pharmtech.data.MedicineSchema;
 import com.bhcc.app.pharmtech.data.model.Medicine;
 import com.bhcc.app.pharmtech.view.MainActivity;
+import com.bhcc.app.pharmtech.view.navigation.ReplaceFragmentCommand;
+import com.bhcc.app.pharmtech.view.review.ReviewFragment;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -51,7 +53,7 @@ public class QuizMultipleChoiceFragment extends Fragment
     // static usage
     private final static int NUM_CHOICE = 4;
     // for each instance
-    private int numQuiz;
+    private int totalNumQuestions;
     private int index = 0;
     private int done = 0;
     private int correct = 0;
@@ -87,6 +89,8 @@ public class QuizMultipleChoiceFragment extends Fragment
 
     // to be saved and hold things about each quiz
     private QuizTracker tracker;
+    // to hold which retake number this, to update the score at the correct index.
+    private int attemptNum;
 
     // flags if operations to create new file need to happen or not
     private boolean isRetake;
@@ -152,7 +156,7 @@ public class QuizMultipleChoiceFragment extends Fragment
 
         topicList = getArguments().getStringArray(EXTRA_TOPIC_LIST);
         fieldList = getArguments().getStringArray(EXTRA_FIELD_LIST);
-        numQuiz = getArguments().getInt(EXTRA_NUM_QUIZ, 0);
+        totalNumQuestions = getArguments().getInt(EXTRA_NUM_QUIZ, 0);
         tracker = (QuizTracker) getArguments().getSerializable(EXTRA_QUIZ_TRACKER);
         isRetake = getArguments().getBoolean(EXTRA_IS_RETAKE);
 
@@ -177,12 +181,19 @@ public class QuizMultipleChoiceFragment extends Fragment
             {
                 Log.e(TAG, "REVIEW_FILE not updated", ex);
             }
+
+            attemptNum = 0;
+            // init the element that holds the trackers score
+            tracker.addScore(0);
         }
         // otherwise, REVIEW_FILE knows about the .txt and the .dat files. Get them from Tracker object
         else if(tracker != null)
         {
             outPutFileName = tracker.getTitle() + ".txt";
             trackerFileName = tracker.getTitle() + ".dat";
+            attemptNum = tracker.getNumTimesTaken();
+            // init the element that holds the trackers score
+            tracker.addScore(0);
 
             Log.d(TAG, "User is retaking " + tracker.getTitle());
             Log.d(TAG, "User has taken this quiz " + tracker.getNumTimesTaken() + " and is about to take it again");
@@ -249,20 +260,20 @@ public class QuizMultipleChoiceFragment extends Fragment
         allMedicines = MedicineLab.get(getActivity()).getSpecificMedicines(null, null, MedicineSchema.MedicineTable.Cols.GENERIC_NAME);
 
         // set up lists
-        correctChoice = new int[numQuiz];
+        correctChoice = new int[totalNumQuestions];
 
-        mSubmitButton = new Button[numQuiz];
+        mSubmitButton = new Button[totalNumQuestions];
 
-        tvQuestion = new TextView[numQuiz];
-        strQuestion = new String[numQuiz];
-        strAnswer = new String[numQuiz];
-        rgChoices = new RadioGroup[numQuiz];
-        rbChoice1 = new RadioButton[NUM_CHOICE][numQuiz];
+        tvQuestion = new TextView[totalNumQuestions];
+        strQuestion = new String[totalNumQuestions];
+        strAnswer = new String[totalNumQuestions];
+        rgChoices = new RadioGroup[totalNumQuestions];
+        rbChoice1 = new RadioButton[NUM_CHOICE][totalNumQuestions];
 
         indexOfSubmittedQuestionList = new ArrayList<>();
 
         // set up boolean flags to false
-        isViewCreated = new boolean[numQuiz];
+        isViewCreated = new boolean[totalNumQuestions];
         for (int i = 0; i < isViewCreated.length; i++)
         {
             isViewCreated[i] = false;
@@ -272,7 +283,7 @@ public class QuizMultipleChoiceFragment extends Fragment
         mScoreTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
         medicines = findMedicinesQuiz(topicList);
         Collections.shuffle(medicines);
-        medicines = medicines.subList(0, numQuiz);
+        medicines = medicines.subList(0, totalNumQuestions);
         Log.i("test1", String.valueOf(medicines.size()));
 
         for (Medicine medicine : medicines)
@@ -290,7 +301,7 @@ public class QuizMultipleChoiceFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                index = (index + 1) % numQuiz;
+                index = (index + 1) % totalNumQuestions;
                 updateUI();
             }
         });
@@ -302,8 +313,8 @@ public class QuizMultipleChoiceFragment extends Fragment
             public void onClick(View v)
             {
                 if (index == 0)
-                    index = numQuiz;
-                index = (index - 1) % numQuiz;
+                    index = totalNumQuestions;
+                index = (index - 1) % totalNumQuestions;
                 updateUI();
             }
         });
@@ -320,7 +331,7 @@ public class QuizMultipleChoiceFragment extends Fragment
         // update scores
         //mDrugNameTextView.setText(medicines.get(index).getGenericName());
 
-        String results="Done: " + done + "/" + numQuiz
+        String results="Done: " + done + "/" + totalNumQuestions
                 + "\t\t\t" + "Correct: " + correct;
         mScoreTextView.setText(results);
 
@@ -501,7 +512,7 @@ public class QuizMultipleChoiceFragment extends Fragment
                             rbChoice1[i][index].setEnabled(false);
                         }
 
-                        String results="Done: " + done + "/" + numQuiz
+                        String results="Done: " + done + "/" + totalNumQuestions
                                 + "\t\t\t" + "Correct: " + correct;
                         rgChoices[index].setEnabled(false);
                         mScoreTextView.setText(results);
@@ -511,7 +522,7 @@ public class QuizMultipleChoiceFragment extends Fragment
                         Toast.makeText(getContext(), "Please choose one of the choices", Toast.LENGTH_SHORT).show();
                     }
 
-                    if (done == numQuiz)
+                    if (done == totalNumQuestions)
                     {
                         showSummaryDialog();
                     }
@@ -524,12 +535,10 @@ public class QuizMultipleChoiceFragment extends Fragment
             isViewCreated[index] = true;
         } else
         {
-            //mLinearLayout.addView(tvQuestion[index]);
             mQuestion.setText(strQuestion[index]);
             mLinearLayout.addView(rgChoices[index]);
 
             mSubmitButtonLayout.addView(mSubmitButton[index]);
-
         }
 
     }
@@ -578,6 +587,9 @@ public class QuizMultipleChoiceFragment extends Fragment
         try
         {
             PrintWriter printWriter = new PrintWriter(file);
+
+            printWriter.write("Answers from the last time you took this quiz.\n\n");
+
             for (int i : indexOfSubmittedQuestionList)
             {
                 printWriter.write(strQuestion[i] + "\n");
@@ -589,7 +601,10 @@ public class QuizMultipleChoiceFragment extends Fragment
         }
         catch (Exception ex)
         {
+            Log.i(TAG, "Problem writing user's answers", ex);
         }
+
+        tracker.addScoreToLastIndex(correct * 100.0 / totalNumQuestions);
 
         try
         {
@@ -616,14 +631,8 @@ public class QuizMultipleChoiceFragment extends Fragment
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.score_summary_dialog);
 
-        double percentage = (correct * 100.0 / numQuiz);
+        double percentage = (correct * 100.0 / totalNumQuestions);
         Log.i("test", String.valueOf(percentage));
-
-        // now that we calculated the percentage, give that to the tracker.
-        if(tracker != null)
-        {
-            tracker.addScore(percentage);
-        }
 
         TextView tvScorePercentage = (TextView) dialog.findViewById(R.id.score_percentage);
         tvScorePercentage.setText(String.valueOf((int) percentage) + "%");
@@ -632,7 +641,7 @@ public class QuizMultipleChoiceFragment extends Fragment
         tvCorrectPoints.setText(String.valueOf(correct));
 
         TextView tvWrongPoints = (TextView) dialog.findViewById(R.id.wrong_score);
-        tvWrongPoints.setText(String.valueOf(numQuiz - correct));
+        tvWrongPoints.setText(String.valueOf(totalNumQuestions - correct));
 
         TextView tvOK = (TextView) dialog.findViewById(R.id.score_summary_ok_button);
         tvOK.setOnClickListener(new View.OnClickListener()
@@ -641,6 +650,7 @@ public class QuizMultipleChoiceFragment extends Fragment
             public void onClick(View v)
             {
                 dialog.dismiss();
+                ReplaceFragmentCommand.startNewFragment(getActivity(), new ReviewFragment(), false);
             }
         });
 
