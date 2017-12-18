@@ -184,6 +184,7 @@ public class ReviewFragment extends Fragment
             idTextView.setText("Quiz #" + (getPosition() + 1));
             nameTextView.setText(name);
 
+            //
             QuizTracker tracker = getTracker(trackerFileNameList.get(getPosition()));
             tvNumTimesTaken.setText("Times Taken: " + Integer.toString(tracker.getNumTimesTaken()));
             tvAvgScore.setText("Average Score: %" + Double.toString(round(tracker.getAverageScore(), 2)));
