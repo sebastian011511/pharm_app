@@ -186,7 +186,7 @@ public class ReviewFragment extends Fragment
 
             QuizTracker tracker = getTracker(trackerFileNameList.get(getPosition()));
             tvNumTimesTaken.setText("Times Taken: " + Integer.toString(tracker.getNumTimesTaken()));
-            tvAvgScore.setText("Average Score: " + Double.toString(round(tracker.getAverageScore(), 2)));
+            tvAvgScore.setText("Average Score: %" + Double.toString(round(tracker.getAverageScore(), 2)));
 
 
             // Delete Review Part

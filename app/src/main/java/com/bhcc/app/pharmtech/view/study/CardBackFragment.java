@@ -28,7 +28,7 @@ public class CardBackFragment extends Fragment {
     // Medicine
     private Medicine medicine;
 
-    /**
+   /**
      * To create a new instance of the fragment
      * @param medicine
      * @return CardBackFragment w/ a medicine
