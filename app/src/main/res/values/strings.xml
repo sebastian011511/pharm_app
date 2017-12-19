@@ -11,7 +11,7 @@
     <string name="previous_button"><![CDATA[ < ]]></string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="search">Search</string>
+    <string name="search">Search Drugs</string>
     <string name="flip_instruction">(Long click generic name to flip card)</string>
     <string name="clear_search">Clear Search</string>
     <string name="legal_title_label">Legal Disclaimers etc. - PharmTech app\n</string>

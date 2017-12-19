@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -113,6 +114,10 @@ public class MedicineListFragment extends Fragment {
                         .updateMedicineLab(MedicineSchema.MedicineTable.Cols.GENERIC_NAME + " LIKE ? ",
                                 args, MedicineSchema.MedicineTable.Cols.GENERIC_NAME);
 
+                //If searched item is not found in Lab of drugs, display a toast with message
+                if(!MedicineLab.get(getContext()).getMedicines().contains(args))
+                    Toast.makeText(getContext(), "No drugs found with that generic name.",
+                            Toast.LENGTH_LONG).show();
                 // update UI
                 updateUI();
                 searchView.clearFocus();

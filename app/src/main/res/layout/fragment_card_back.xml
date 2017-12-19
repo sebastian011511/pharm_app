@@ -105,6 +105,6 @@
         android:layout_marginRight="16dp"
         android:background="@null"
         android:elevation="3dp"
-        android:src="@drawable/ic_play_button_dar_red" />
+        android:src="@drawable/ic_play_back_white" />
 
 </FrameLayout>
